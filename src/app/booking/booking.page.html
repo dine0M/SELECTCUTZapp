@@ -1,0 +1,32 @@
+<app-site-header></app-site-header>
+<ion-content>
+  <main class="page">
+    <section class="panel">
+      <h1>Book Appointment</h1>
+      <p class="sub">Choose your preferred time, date and then your service.</p>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+      <div class="alert success" *ngIf="message">{{ message }}</div>
+
+      <form #bookingForm="ngForm" (ngSubmit)="submit()" novalidate>
+        <label for="booking-time">Time</label>
+        <input id="booking-time" [(ngModel)]="time" name="time" type="time" required>
+
+        <label for="booking-date">Date</label>
+        <input id="booking-date" [(ngModel)]="date" name="date" type="date" [min]="minDate" required>
+
+        <label for="booking-service">Service</label>
+        <select id="booking-service" [(ngModel)]="serviceId" name="service" [disabled]="!time || !date" required>
+          <option [ngValue]="0" disabled>Select a service</option>
+          <option *ngFor="let service of services" [ngValue]="service.ServiceID">{{ service.ServiceName }} - R{{ service.Price }}</option>
+        </select>
+
+        <p class="login-note" *ngIf="!time || !date">Choose a time and date before selecting a service.</p>
+        <ion-button expand="block" type="submit" [disabled]="busy || bookingForm.invalid">
+          {{ busy ? 'Confirming...' : 'Confirm Booking' }}
+        </ion-button>
+      </form>
+    </section>
+  </main>
+  <app-site-footer></app-site-footer>
+</ion-content>

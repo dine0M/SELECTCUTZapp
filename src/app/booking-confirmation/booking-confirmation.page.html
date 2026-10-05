@@ -1,0 +1,22 @@
+<app-site-header></app-site-header>
+<ion-content>
+  <main class="confirmation-page" *ngIf="confirmation as booking">
+    <section class="confirmation-card" aria-labelledby="confirmation-title">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h1 id="confirmation-title">Booking Confirmed</h1>
+      <p class="message">{{ booking.message }}</p>
+      <dl>
+        <div><dt>Booking reference</dt><dd>#{{ booking.bookingId }}</dd></div>
+        <div><dt>Customer</dt><dd>{{ booking.customerName }}</dd></div>
+        <div><dt>Service</dt><dd>{{ booking.serviceName }}</dd></div>
+        <div><dt>Date</dt><dd>{{ booking.date }}</dd></div>
+        <div><dt>Time</dt><dd>{{ booking.time }}</dd></div>
+        <div><dt>Price</dt><dd>R{{ booking.price }}</dd></div>
+        <div><dt>Status</dt><dd><span class="status">{{ booking.status }}</span></dd></div>
+      </dl>
+      <ion-button expand="block" routerLink="/dashboard">View My Bookings</ion-button>
+      <a routerLink="/booking">Book another appointment</a>
+    </section>
+  </main>
+  <app-site-footer></app-site-footer>
+</ion-content>

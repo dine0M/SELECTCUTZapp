@@ -1,0 +1,36 @@
+<app-site-header></app-site-header>
+
+<ion-content>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Look Good.<br><span>Feel Confident.</span></h1>
+      <p>
+        Customers can browse services without logging in. To book an appointment,
+        customers must register or log in first.
+      </p>
+      <div class="hero-buttons">
+        <ion-button class="book-button" (click)="book()">Book Appointment</ion-button>
+        <ion-button fill="outline" class="services-button" routerLink="/services">Browse Services</ion-button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2 class="title">Featured Services</h2>
+
+    <div class="grid" *ngIf="!loading">
+      <article class="service" *ngFor="let service of services">
+        <img [src]="imageUrl(service.ServiceImage)" [alt]="service.ServiceName + ' haircut'" loading="lazy" decoding="async">
+        <h3>{{ service.ServiceName }}</h3>
+        <p>{{ service.Description }}</p>
+        <div class="price">R{{ service.Price }}</div>
+        <ion-button class="book-card" (click)="book(service.ServiceID)">Book Now</ion-button>
+      </article>
+    </div>
+
+    <p class="empty" *ngIf="!loading && services.length === 0">
+      No services are currently available.
+    </p>
+  </section>
+  <app-site-footer></app-site-footer>
+</ion-content>

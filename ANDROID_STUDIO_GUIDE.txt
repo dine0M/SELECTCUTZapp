@@ -1,0 +1,27 @@
+SELECT CUTZ - ANDROID STUDIO QUICK START
+
+FIRST TIME ONLY
+1. Install Android Studio.
+2. During installation, select Android SDK, Android SDK Platform and Android Virtual Device.
+3. Open Android Studio and allow it to download any requested SDK or Gradle components.
+
+RUN THE APP
+1. Put the complete project here:
+   C:\xampp\htdocs\SelectCutzApp_READY\SelectCutzApp
+2. Start Apache and MySQL in XAMPP.
+3. Open PowerShell in the SelectCutzApp folder and run:
+   npm install
+   npm run android:sync
+   npm run android:open
+4. Wait for Android Studio's Gradle Sync to finish.
+5. Open Device Manager, create/start a phone emulator, then press the green Run button.
+
+IMPORTANT
+- Open the generated android folder in Android Studio, not the outer project folder.
+- The emulator uses 10.0.2.2 to access XAMPP on your computer.
+- Do not replace 10.0.2.2 with localhost when using the emulator.
+- Apache and MySQL must stay running for login, registration, services and bookings.
+- After changing Ionic code, run npm run android:sync again.
+
+PHYSICAL PHONE
+Replace 10.0.2.2 in nativeApiBaseUrl in both environment files with your PC's IPv4 address, then run npm run android:sync. The phone and PC must use the same Wi-Fi, and Apache must be allowed through Windows Firewall.

@@ -1,0 +1,16 @@
+ion-content { --background:#0b0b0b; }
+.page { padding:45px 4%; }
+.title { text-align:center; color:#d6a832; font-size:34px; margin:0; }
+.intro,.message { text-align:center; color:#ddd; margin:10px 0 35px; }
+.error { color:#ff8a8a; }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.service { background:#171717; border:1px solid #333; border-radius:18px; overflow:hidden; }
+.service img { width:100%; aspect-ratio:4/3; object-fit:cover; object-position:center 22%; display:block; background:#242424; }
+.service-content { padding:22px; }
+.service h2 { color:#fff; margin-top:0; }
+.service p { color:#ccc; line-height:1.6; }
+.duration { color:#aaa !important; }
+.price { color:#d6a832; font-size:21px; font-weight:700; margin:16px 0; }
+ion-button { --background:#d6a832; --color:#111; --border-radius:8px; font-weight:700; }
+@media(max-width:1000px) { .grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:650px) { .grid { grid-template-columns:1fr; } .page { padding:35px 20px; } }

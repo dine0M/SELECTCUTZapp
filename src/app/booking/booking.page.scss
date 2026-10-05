@@ -1,0 +1,12 @@
+ion-content { --background:#0b0b0b; }
+.page { padding:45px 20px; min-height:100%; display:flex; justify-content:center; align-items:flex-start; }
+.panel { width:min(650px,100%); background:#171717; border:1px solid #333; border-radius:18px; padding:30px; }
+h1 { color:#d6a832; margin-top:0; }
+.sub,.login-note { color:#ccc; line-height:1.6; }
+label { display:block; color:#d6a832; font-weight:700; margin-top:18px; }
+input,select { width:100%; padding:14px; border-radius:8px; border:1px solid #444; background:#0c0c0c; color:white; margin-top:8px; }
+ion-button { --background:#d6a832; --color:#111; --border-radius:8px; margin-top:24px; font-weight:700; }
+a { color:#d6a832; }
+.alert { padding:12px; border-radius:8px; margin:12px 0; }
+.error { background:#401b1b; color:#ffb3b3; }
+.success { background:#193b20; color:#b8f5c3; }

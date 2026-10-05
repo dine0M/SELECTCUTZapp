@@ -1,0 +1,27 @@
+<app-site-header></app-site-header>
+
+<ion-content>
+  <main class="page">
+    <h1 class="title">Our Haircut Services</h1>
+    <p class="intro">Customers can browse this page without logging in.</p>
+
+    <div class="message" *ngIf="loading">Loading services...</div>
+    <div class="message error" *ngIf="!loading && error">{{ error }}</div>
+
+    <div class="grid" *ngIf="!loading && !error">
+      <article class="service" *ngFor="let service of services">
+        <img [src]="imageUrl(service.ServiceImage)" [alt]="service.ServiceName + ' haircut'" loading="lazy" decoding="async" width="640" height="480" (error)="imageError($event)">
+        <div class="service-content">
+          <h2>{{ service.ServiceName }}</h2>
+          <p>{{ service.Description }}</p>
+          <p class="duration">Duration: {{ service.Duration }} minutes</p>
+          <div class="price">R{{ service.Price }}</div>
+          <ion-button expand="block" (click)="bookService(service.ServiceID)">Book Appointment</ion-button>
+        </div>
+      </article>
+    </div>
+
+    <p class="message" *ngIf="!loading && !error && services.length === 0">No services are currently available.</p>
+  </main>
+  <app-site-footer></app-site-footer>
+</ion-content>

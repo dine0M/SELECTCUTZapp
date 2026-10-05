@@ -1,0 +1,18 @@
+ion-menu {
+  --width: 280px;
+}
+
+ion-menu ion-toolbar {
+  --background: #050505;
+  --color: white;
+}
+
+ion-menu ion-content {
+  --background: #0b0b0b;
+}
+
+ion-menu ion-item {
+  --background: #0b0b0b;
+  --color: white;
+  --border-color: #222;
+}

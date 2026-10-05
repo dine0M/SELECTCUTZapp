@@ -1,0 +1,12 @@
+ion-content { --background:#0b0b0b; }
+.owner-section { display:grid; grid-template-columns:.9fr 1.1fr; gap:50px; padding:60px 6%; align-items:center; background:linear-gradient(120deg,#050505,#111); }
+.owner-image img { width:100%; aspect-ratio:4/3; max-height:520px; object-fit:cover; object-position:center; border-radius:25px; border:3px solid #d6a832; display:block; background:#242424; }
+.owner-content h1,.owner-content h3 { color:#d6a832; }
+.owner-content h1 { font-size:42px; margin-bottom:10px; }
+.owner-content h2 { color:#d6a832; font-size:28px; }
+.owner-content p { color:#ddd; line-height:1.8; font-size:16px; }
+.mission-box,.vision-box { background:#171717; border-left:4px solid #d6a832; padding:20px; margin-top:20px; border-radius:12px; }
+.contact { padding:35px 6%; background:#050505; border-top:1px solid #333; color:#ddd; }
+.contact h2 { color:#d6a832; }
+ion-button { --background:#d6a832; --color:#111; --border-radius:8px; margin-top:20px; }
+@media(max-width:850px) { .owner-section { grid-template-columns:1fr; padding:35px 20px; } .owner-content h1 { font-size:34px; } }

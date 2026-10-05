@@ -1,0 +1,7 @@
+{
+  "name": "SelectCutzApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

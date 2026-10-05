@@ -1,0 +1,12 @@
+ion-content { --background:#0b0b0b; }
+.register-bg { min-height:100%; display:flex; justify-content:center; align-items:center; padding:35px 20px; background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.78)),url('/assets/logo.jpg') center/cover no-repeat; }
+.auth { width:min(450px,100%); background:rgba(20,20,20,.96); border:1px solid #333; border-radius:18px; padding:30px; }
+.auth-logo { width:70px; height:70px; object-fit:cover; border-radius:12px; border:2px solid #d6a832; }
+.auth h1 { color:#d6a832; font-size:25px; }
+label { display:block; color:#d6a832; font-weight:700; margin-top:13px; }
+input { width:100%; padding:13px; border-radius:8px; border:1px solid #444; background:#0c0c0c; color:white; margin:8px 0; }
+ion-button { --background:#d6a832; --color:#111; --border-radius:8px; margin-top:18px; font-weight:700; }
+a { color:#d6a832; }
+.alert { padding:12px; border-radius:8px; margin:12px 0; }
+.error { background:#401b1b; color:#ffb3b3; }
+.success { background:#193b20; color:#b8f5c3; }

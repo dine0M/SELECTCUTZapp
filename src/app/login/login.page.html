@@ -1,0 +1,32 @@
+<app-site-header></app-site-header>
+<ion-content>
+  <main class="login-bg">
+    <section class="auth">
+      <h1>Login</h1>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+      <div class="alert success" *ngIf="message">{{ message }}</div>
+
+      <form (ngSubmit)="submit()" novalidate>
+        <label for="account-type">Account Type</label>
+        <select id="account-type" [(ngModel)]="type" name="type">
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <label for="username">Email / Admin Username</label>
+        <input id="username" [(ngModel)]="username" name="username" required autocomplete="username">
+
+        <label for="password">Password</label>
+        <input id="password" [(ngModel)]="password" name="password" type="password" required autocomplete="current-password">
+
+        <ion-button expand="block" type="button" (click)="submit()" [disabled]="busy">
+          {{ busy ? 'Logging in...' : 'Login' }}
+        </ion-button>
+      </form>
+
+      <p>New customer? <a routerLink="/register">Register here</a></p>
+    </section>
+  </main>
+  <app-site-footer></app-site-footer>
+</ion-content>

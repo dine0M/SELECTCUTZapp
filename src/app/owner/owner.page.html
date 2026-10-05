@@ -1,0 +1,42 @@
+<app-site-header></app-site-header>
+<ion-content>
+  <section class="owner-section">
+    <div class="owner-image">
+      <img [src]="imageUrl(site.OwnerPhoto)" alt="SELECT CUTZ owner" decoding="async">
+    </div>
+
+    <div class="owner-content">
+      <h1>Meet {{ site.OwnerName }}</h1>
+      <h2>{{ site.OwnerTitle }}</h2>
+
+      <p>{{ site.OwnerBio }}</p>
+
+      <div class="mission-box">
+        <h3>Our Mission</h3>
+        <p>
+          To provide high-quality grooming services while delivering excellent customer
+          service, convenience, and professionalism through innovative digital solutions.
+        </p>
+      </div>
+
+      <div class="vision-box">
+        <h3>Our Vision</h3>
+        <p>
+          To become a leading barber and salon brand known for quality service,
+          customer satisfaction, and modern grooming experiences.
+        </p>
+      </div>
+
+      <ion-button routerLink="/services">Explore Our Services</ion-button>
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2>Contact SELECT CUTZ</h2>
+    <p>{{ site.ContactPhone }}</p>
+    <p>{{ site.ContactEmail }}</p>
+    <p>{{ site.BusinessHours }}</p>
+    <p>{{ site.Address }}</p>
+  </section>
+  <app-site-footer></app-site-footer>
+</ion-content>

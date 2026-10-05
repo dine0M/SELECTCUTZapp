@@ -1,0 +1,29 @@
+ion-content { --background:#0b0b0b; }
+.hero {
+  min-height:560px; display:flex; align-items:center; padding:70px 6%;
+  background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.94) 45%,rgba(0,0,0,.3) 100%),url('/assets/classic-fade.jpeg') 82% 25%/cover no-repeat;
+}
+.hero-content { max-width:680px; }
+.hero h1 { color:white; font-size:58px; line-height:1.1; margin:0 0 20px; font-weight:700; }
+.hero h1 span { color:#d6a832; }
+.hero p { color:#eee; font-size:17px; line-height:1.7; max-width:760px; margin-bottom:25px; }
+.hero-buttons { display:flex; gap:12px; }
+.book-button, .book-card { --background:#d6a832; --color:#111; --border-radius:9px; font-weight:700; }
+.services-button { --border-color:#d6a832; --color:#d6a832; --border-radius:9px; font-weight:700; }
+.page { padding:50px 4%; background:#0b0b0b; }
+.title { text-align:center; color:#d6a832; font-size:34px; margin:0 0 40px; }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.service { background:#171717; border:1px solid #333; border-radius:18px; padding:20px; text-align:center; }
+.service img { width:100%; aspect-ratio:4/3; object-fit:cover; object-position:center 22%; border-radius:14px; display:block; background:#242424; }
+.service h3 { color:white; font-size:22px; margin:18px 0 10px; }
+.service p { color:#ccc; line-height:1.6; min-height:50px; }
+.price { color:#d6a832; font-weight:700; font-size:20px; margin:15px 0; }
+.empty { color:#ccc; text-align:center; }
+@media(max-width:768px) {
+  .hero { min-height:500px; padding:55px 20px; background-position:62% 25%; }
+  .hero h1 { font-size:42px; }
+  .hero p { font-size:15px; }
+  .hero-buttons { flex-direction:column; }
+  .grid { grid-template-columns:1fr; }
+  .page { padding:40px 20px; }
+}

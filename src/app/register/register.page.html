@@ -1,0 +1,35 @@
+<app-site-header></app-site-header>
+<ion-content>
+  <main class="register-bg">
+    <section class="auth">
+      <h1>Create Customer Account</h1>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+      <div class="alert success" *ngIf="message">{{ message }}</div>
+
+      <form (ngSubmit)="submit()" novalidate>
+        <label for="full-name">Full Name</label>
+        <input id="full-name" [(ngModel)]="name" name="name" required autocomplete="name">
+
+        <label for="email">Email</label>
+        <input id="email" [(ngModel)]="email" name="email" type="email" required autocomplete="email">
+
+        <label for="phone">Phone Number</label>
+        <input id="phone" [(ngModel)]="phone" name="phone" type="tel" required autocomplete="tel">
+
+        <label for="new-password">Password</label>
+        <input id="new-password" [(ngModel)]="password" name="password" type="password" minlength="6" required autocomplete="new-password">
+
+        <label for="confirm-password">Confirm Password</label>
+        <input id="confirm-password" [(ngModel)]="confirmPassword" name="confirmPassword" type="password" minlength="6" required autocomplete="new-password">
+
+        <ion-button expand="block" type="button" (click)="submit()" [disabled]="busy">
+          {{ busy ? 'Creating account...' : 'Register' }}
+        </ion-button>
+      </form>
+
+      <p>Already have an account? <a routerLink="/login">Login here</a></p>
+    </section>
+  </main>
+  <app-site-footer></app-site-footer>
+</ion-content>
