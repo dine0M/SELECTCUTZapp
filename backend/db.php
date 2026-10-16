@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $password = "";
-$database = "select_cutz_db";
+$database = "selectcutz";
 try {
     $conn = mysqli_init();
     $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
