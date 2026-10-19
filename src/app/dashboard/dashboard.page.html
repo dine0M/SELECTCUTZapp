@@ -1,6 +1,7 @@
 <app-site-header></app-site-header>
 
 <div class="dashboard-scroll">
+  <!-- Customer dashboard -->
   <div
     class="dashboard-layout"
     *ngIf="auth.user?.type === 'customer'"
@@ -10,31 +11,57 @@
       aria-label="Customer dashboard navigation"
     >
       <h2>Customer</h2>
-      <a class="active" routerLink="/dashboard">My Bookings</a>
-      <a routerLink="/booking">Book</a>
-      <a routerLink="/services">Services</a>
-      <button type="button" (click)="logout()">Logout</button>
+
+      <a class="active" routerLink="/dashboard">
+        My Bookings
+      </a>
+
+      <a routerLink="/booking">
+        Book
+      </a>
+
+      <a routerLink="/services">
+        Services
+      </a>
+
+      <a routerLink="/customer-settings">
+        My Settings
+      </a>
+
+      <button type="button" (click)="logout()">
+        Logout
+      </button>
     </aside>
 
     <main class="dash">
       <h1>Welcome, {{ auth.user!.name }}</h1>
 
-      <div class="alert error" role="alert" *ngIf="error">
+      <div
+        class="alert error"
+        role="alert"
+        *ngIf="error"
+      >
         {{ error }}
       </div>
-      <div class="alert success" role="status" *ngIf="message">
+
+      <div
+        class="alert success"
+        role="status"
+        *ngIf="message"
+      >
         {{ message }}
       </div>
 
       <section id="bookings" class="dashboard-section">
         <div class="section-heading">
           <h2>My Bookings</h2>
+
           <ion-button routerLink="/booking">
             Book Appointment
           </ion-button>
         </div>
 
-        <div *ngIf="loading" class="empty">
+        <div class="empty" *ngIf="loading">
           Loading your bookings...
         </div>
 
@@ -54,6 +81,7 @@
               <th>Action</th>
             </tr>
             </thead>
+
             <tbody>
             <tr *ngFor="let booking of bookings">
               <td>{{ booking.BookingID }}</td>
@@ -61,11 +89,13 @@
               <td>{{ booking.BookingDate }}</td>
               <td>{{ booking.BookingTime }}</td>
               <td>R{{ booking.BookingAmount }}</td>
+
               <td>
                   <span class="badge">
                     {{ booking.BookingStatus }}
                   </span>
               </td>
+
               <td>
                 <button
                   class="table-action"
@@ -83,8 +113,8 @@
         </div>
 
         <div
-          *ngIf="!loading && !bookings.length"
           class="empty"
+          *ngIf="!loading && !bookings.length"
         >
           No bookings yet.
           <a routerLink="/booking">
@@ -96,7 +126,10 @@
       <section class="dashboard-section">
         <h2>Notifications</h2>
 
-        <div class="table-wrap" *ngIf="notifications.length">
+        <div
+          class="table-wrap"
+          *ngIf="notifications.length"
+        >
           <table>
             <thead>
             <tr>
@@ -104,6 +137,7 @@
               <th>Date</th>
             </tr>
             </thead>
+
             <tbody>
             <tr *ngFor="let note of notifications">
               <td>{{ note.Message }}</td>
@@ -113,13 +147,17 @@
           </table>
         </div>
 
-        <div *ngIf="!notifications.length" class="empty">
+        <div
+          class="empty"
+          *ngIf="!notifications.length"
+        >
           No notifications yet.
         </div>
       </section>
     </main>
   </div>
 
+  <!-- Administrator dashboard -->
   <div
     class="dashboard-layout"
     *ngIf="auth.user?.type === 'admin'"
@@ -129,20 +167,44 @@
       aria-label="Admin dashboard navigation"
     >
       <h2>Admin</h2>
-      <a class="active" routerLink="/dashboard">Dashboard</a>
-      <a routerLink="/admin/services">Manage Services</a>
-      <a routerLink="/admin/site">Logo &amp; Owner</a>
-      <a routerLink="/admin/reports">Reports</a>
-      <button type="button" (click)="logout()">Logout</button>
+
+      <a class="active" routerLink="/dashboard">
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/services">
+        Manage Services
+      </a>
+
+      <a routerLink="/admin/site">
+        Logo &amp; Owner
+      </a>
+
+      <a routerLink="/admin/reports">
+        Reports
+      </a>
+
+      <button type="button" (click)="logout()">
+        Logout
+      </button>
     </aside>
 
     <main class="dash">
       <h1 id="overview">Admin Dashboard</h1>
 
-      <div class="alert error" role="alert" *ngIf="error">
+      <div
+        class="alert error"
+        role="alert"
+        *ngIf="error"
+      >
         {{ error }}
       </div>
-      <div class="alert success" role="status" *ngIf="message">
+
+      <div
+        class="alert success"
+        role="status"
+        *ngIf="message"
+      >
         {{ message }}
       </div>
 
@@ -150,26 +212,35 @@
         Loading dashboard...
       </p>
 
-      <section class="stats" *ngIf="summary && !loading">
+      <section
+        class="stats"
+        *ngIf="summary && !loading"
+      >
         <div>
           <span>Customers</span>
           <strong>{{ summary.TotalCustomers }}</strong>
         </div>
+
         <div>
           <span>Bookings</span>
           <strong>{{ summary.TotalBookings }}</strong>
         </div>
+
         <div>
           <span>Services</span>
           <strong>{{ summary.TotalServices }}</strong>
         </div>
+
         <div>
           <span>Revenue</span>
           <strong>R{{ summary.TotalRevenue }}</strong>
         </div>
       </section>
 
-      <section class="dashboard-section" *ngIf="!loading">
+      <section
+        class="dashboard-section"
+        *ngIf="!loading"
+      >
         <h2>Recent Bookings From Database</h2>
 
         <div class="table-wrap" *ngIf="bookings.length">
@@ -185,6 +256,7 @@
               <th>Action</th>
             </tr>
             </thead>
+
             <tbody>
             <tr *ngFor="let b of bookings">
               <td>{{ b.BookingID }}</td>
@@ -192,11 +264,13 @@
               <td>{{ b.ServiceName }}</td>
               <td>{{ b.BookingDate }}</td>
               <td>{{ b.BookingTime }}</td>
+
               <td>
                   <span class="badge">
                     {{ b.BookingStatus }}
                   </span>
               </td>
+
               <td>
                 <button
                   class="table-action"
