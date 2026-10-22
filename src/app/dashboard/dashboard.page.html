@@ -1,37 +1,222 @@
 <app-site-header></app-site-header>
+
 <div class="dashboard-scroll">
-<div class="dashboard-layout" *ngIf="auth.user?.type === 'customer'">
-  <aside class="side-nav" aria-label="Customer dashboard navigation">
-    <h2>Customer</h2><a class="active" routerLink="/dashboard">My Bookings</a><a routerLink="/booking">Book</a><a routerLink="/services">Services</a><button type="button" (click)="logout()">Logout</button>
-  </aside>
-  <main class="dash">
-    <h1>Welcome, {{ auth.user!.name }}</h1>
-    <div class="alert error" *ngIf="error">{{ error }}</div><div class="alert success" *ngIf="message">{{ message }}</div>
-    <section id="bookings" class="dashboard-section">
-      <div class="section-heading"><h2>My Bookings</h2><ion-button routerLink="/booking">Book Appointment</ion-button></div>
-      <div *ngIf="loading" class="empty">Loading your bookings...</div>
-      <div class="table-wrap" *ngIf="!loading && bookings.length"><table><thead><tr><th>ID</th><th>Service</th><th>Date</th><th>Time</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
-        <tr *ngFor="let booking of bookings"><td>{{ booking.BookingID }}</td><td>{{ booking.ServiceName }}</td><td>{{ booking.BookingDate }}</td><td>{{ booking.BookingTime }}</td><td>R{{ booking.BookingAmount }}</td><td><span class="badge">{{ booking.BookingStatus }}</span></td><td><button class="table-action" type="button" *ngIf="booking.BookingStatus !== 'Cancelled'" (click)="cancel(booking.BookingID)">Cancel</button></td></tr>
-      </tbody></table></div>
-      <div *ngIf="!loading && !bookings.length" class="empty">No bookings yet. <a routerLink="/booking">Book your first appointment.</a></div>
-    </section>
-    <section class="dashboard-section"><h2>Notifications</h2>
-      <div class="table-wrap" *ngIf="notifications.length"><table><thead><tr><th>Message</th><th>Date</th></tr></thead><tbody><tr *ngFor="let note of notifications"><td>{{ note.Message }}</td><td>{{ note.NotificationDate }}</td></tr></tbody></table></div>
-      <div *ngIf="!notifications.length" class="empty">No notifications yet.</div>
-    </section>
-  </main>
-</div>
+  <div
+    class="dashboard-layout"
+    *ngIf="auth.user?.type === 'customer'"
+  >
+    <aside
+      class="side-nav"
+      aria-label="Customer dashboard navigation"
+    >
+      <h2>Customer</h2>
+      <a class="active" routerLink="/dashboard">My Bookings</a>
+      <a routerLink="/booking">Book</a>
+      <a routerLink="/services">Services</a>
+      <button type="button" (click)="logout()">Logout</button>
+    </aside>
 
-<div class="dashboard-layout" *ngIf="auth.user?.type === 'admin'">
-  <aside class="side-nav" aria-label="Admin dashboard navigation">
-    <h2>Admin</h2><a class="active" routerLink="/dashboard">Dashboard</a><a routerLink="/admin/services">Manage Services</a><a routerLink="/admin/site">Logo & Owner</a><a routerLink="/admin/reports">Reports</a><button type="button" (click)="logout()">Logout</button>
-  </aside>
-  <main class="dash">
-    <h1 id="overview">Admin Dashboard</h1>
-    <div class="alert error" *ngIf="error">{{ error }}</div><div class="alert success" *ngIf="message">{{ message }}</div>
-    <section class="stats" *ngIf="summary"><div><span>Customers</span><strong>{{ summary.TotalCustomers }}</strong></div><div><span>Bookings</span><strong>{{ summary.TotalBookings }}</strong></div><div><span>Services</span><strong>{{ summary.TotalServices }}</strong></div><div><span>Revenue</span><strong>R{{ summary.TotalRevenue }}</strong></div></section>
-    <section class="dashboard-section"><h2>Recent Bookings From Database</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th></tr></thead><tbody><tr *ngFor="let b of bookings"><td>{{ b.BookingID }}</td><td>{{ $any(b).FullName }}</td><td>{{ b.ServiceName }}</td><td>{{ b.BookingDate }}</td><td>{{ b.BookingTime }}</td><td>{{ b.BookingStatus }}</td></tr></tbody></table></div><p class="empty" *ngIf="!bookings.length">No bookings available yet.</p></section>
+    <main class="dash">
+      <h1>Welcome, {{ auth.user!.name }}</h1>
 
-  </main>
-</div>
+      <div class="alert error" role="alert" *ngIf="error">
+        {{ error }}
+      </div>
+      <div class="alert success" role="status" *ngIf="message">
+        {{ message }}
+      </div>
+
+      <section id="bookings" class="dashboard-section">
+        <div class="section-heading">
+          <h2>My Bookings</h2>
+          <ion-button routerLink="/booking">
+            Book Appointment
+          </ion-button>
+        </div>
+
+        <div *ngIf="loading" class="empty">
+          Loading your bookings...
+        </div>
+
+        <div
+          class="table-wrap"
+          *ngIf="!loading && bookings.length"
+        >
+          <table>
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let booking of bookings">
+              <td>{{ booking.BookingID }}</td>
+              <td>{{ booking.ServiceName }}</td>
+              <td>{{ booking.BookingDate }}</td>
+              <td>{{ booking.BookingTime }}</td>
+              <td>R{{ booking.BookingAmount }}</td>
+              <td>
+                  <span class="badge">
+                    {{ booking.BookingStatus }}
+                  </span>
+              </td>
+              <td>
+                <button
+                  class="table-action"
+                  type="button"
+                  *ngIf="canCancel(booking)"
+                  [disabled]="saving"
+                  (click)="cancel(booking.BookingID)"
+                >
+                  Cancel
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          *ngIf="!loading && !bookings.length"
+          class="empty"
+        >
+          No bookings yet.
+          <a routerLink="/booking">
+            Book your first appointment.
+          </a>
+        </div>
+      </section>
+
+      <section class="dashboard-section">
+        <h2>Notifications</h2>
+
+        <div class="table-wrap" *ngIf="notifications.length">
+          <table>
+            <thead>
+            <tr>
+              <th>Message</th>
+              <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let note of notifications">
+              <td>{{ note.Message }}</td>
+              <td>{{ note.NotificationDate }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="!notifications.length" class="empty">
+          No notifications yet.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div
+    class="dashboard-layout"
+    *ngIf="auth.user?.type === 'admin'"
+  >
+    <aside
+      class="side-nav"
+      aria-label="Admin dashboard navigation"
+    >
+      <h2>Admin</h2>
+      <a class="active" routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/admin/services">Manage Services</a>
+      <a routerLink="/admin/site">Logo &amp; Owner</a>
+      <a routerLink="/admin/reports">Reports</a>
+      <button type="button" (click)="logout()">Logout</button>
+    </aside>
+
+    <main class="dash">
+      <h1 id="overview">Admin Dashboard</h1>
+
+      <div class="alert error" role="alert" *ngIf="error">
+        {{ error }}
+      </div>
+      <div class="alert success" role="status" *ngIf="message">
+        {{ message }}
+      </div>
+
+      <p class="empty" *ngIf="loading">
+        Loading dashboard...
+      </p>
+
+      <section class="stats" *ngIf="summary && !loading">
+        <div>
+          <span>Customers</span>
+          <strong>{{ summary.TotalCustomers }}</strong>
+        </div>
+        <div>
+          <span>Bookings</span>
+          <strong>{{ summary.TotalBookings }}</strong>
+        </div>
+        <div>
+          <span>Services</span>
+          <strong>{{ summary.TotalServices }}</strong>
+        </div>
+        <div>
+          <span>Revenue</span>
+          <strong>R{{ summary.TotalRevenue }}</strong>
+        </div>
+      </section>
+
+      <section class="dashboard-section" *ngIf="!loading">
+        <h2>Recent Bookings From Database</h2>
+
+        <div class="table-wrap" *ngIf="bookings.length">
+          <table>
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let b of bookings">
+              <td>{{ b.BookingID }}</td>
+              <td>{{ $any(b).FullName }}</td>
+              <td>{{ b.ServiceName }}</td>
+              <td>{{ b.BookingDate }}</td>
+              <td>{{ b.BookingTime }}</td>
+              <td>
+                  <span class="badge">
+                    {{ b.BookingStatus }}
+                  </span>
+              </td>
+              <td>
+                <button
+                  class="table-action"
+                  type="button"
+                  *ngIf="b.BookingStatus === 'Confirmed'"
+                  [disabled]="saving"
+                  (click)="complete(b.BookingID)"
+                >
+                  Complete
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="empty" *ngIf="!bookings.length">
+          No bookings available yet.
+        </p>
+      </section>
+    </main>
+  </div>
 </div>
