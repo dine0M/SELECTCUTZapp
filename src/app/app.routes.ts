@@ -13,5 +13,11 @@ export const routes: Routes = [
   { path: 'admin/site', title: 'Logo & Owner | SELECT CUTZ', loadComponent: () => import('./admin-site/admin-site.page').then((m) => m.AdminSitePage) },
   { path: 'admin/reports', title: 'Reports | SELECT CUTZ', loadComponent: () => import('./admin-reports/admin-reports.page').then((m) => m.AdminReportsPage) },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'customer-settings',
+    title: 'My Settings | SELECT CUTZ',
+    loadComponent: () => import('./customer-settings/customer-settings.page')
+      .then(m => m.CustomerSettingsPage)
+  },
   { path: '**', redirectTo: 'home' },
 ];
