@@ -40,7 +40,7 @@ PUBLISH TO A PHP/MYSQL WEB HOST
 3. Update hosting-package\db.php with the live database details supplied by the host.
 4. Import database\select_cutz_db.sql into the live MySQL database.
 5. Upload the CONTENTS of hosting-package to public_html (or the host's public folder).
-6. Confirm https://YOUR-DOMAIN/api/health.php works.
+6. Confirm https://selectcutz.alwaysdata.net/home works.
 7. Enable HTTPS before accepting registrations or bookings.
 
 The production app uses /api on the same domain. The included .htaccess supports direct page refreshes on Apache. If the host is not Apache, configure its SPA fallback to index.html.
