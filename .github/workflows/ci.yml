@@ -56,3 +56,149 @@ jobs:
           while IFS= read -r -d '' file; do
             php -l "$file"
           done < <(find backend -type f -name '*.php' -print0)
+
+  api:
+    name: API integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      database:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+          MARIADB_ROOT_HOST: '%'
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli
+          coverage: none
+
+      - name: Import schema into disposable database
+        env:
+          DATABASE_CONTAINER: ${{ job.services.database.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker exec -i "$DATABASE_CONTAINER" \
+            mariadb -uroot < database/select_cutz_db.sql
+
+          for migration in database/migrations/*.sql; do
+            echo "Applying $migration"
+            docker exec -i "$DATABASE_CONTAINER" \
+              mariadb -uroot selectcutz < "$migration"
+          done
+
+      - name: Configure database connection inside CI checkout
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("backend/db.php")
+          text = path.read_text()
+
+          values = {
+              "host": "127.0.0.1",
+              "user": "root",
+              "password": "",
+              "database": "selectcutz"
+          }
+
+          for name, value in values.items():
+              pattern = (
+                  r'(?m)^\$' + name +
+                  r'\s*=\s*["\'][^"\']*["\'];\s*$'
+              )
+              text, count = re.subn(
+                  pattern,
+                  f'${name} = "{value}";',
+                  text,
+                  count=1
+              )
+              if count != 1:
+                  raise SystemExit(
+                      f"Could not configure database variable: {name}"
+                  )
+
+          original = (
+              "$conn->real_connect($host, $user, "
+              "$password, $database);"
+          )
+          replacement = (
+              "$conn->real_connect($host, $user, "
+              "$password, $database, 3307);"
+          )
+
+          if original not in text:
+              raise SystemExit("Database connection call was not found.")
+
+          text = text.replace(original, replacement, 1)
+          path.write_text(text)
+          PY
+
+      - name: Start temporary PHP API
+        shell: bash
+        run: |
+          php -S 127.0.0.1:8081 -t backend \
+            > "$RUNNER_TEMP/selectcutz-api.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/selectcutz-api.pid"
+
+      - name: Wait for API and database
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for attempt in {1..30}; do
+            if curl --fail --silent \
+              http://127.0.0.1:8081/api/health.php \
+              > "$RUNNER_TEMP/selectcutz-health.json"; then
+              cat "$RUNNER_TEMP/selectcutz-health.json"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "API did not become ready."
+          cat "$RUNNER_TEMP/selectcutz-api.log"
+          exit 1
+
+      - name: Run authentication and session integration tests
+        env:
+          CI: 'true'
+          TEST_API_URL: http://127.0.0.1:8081/api
+        run: node --test tests/api/auth.test.mjs
+
+      - name: Show API logs on failure
+        if: failure()
+        run: |
+          if [ -f "$RUNNER_TEMP/selectcutz-api.log" ]; then
+            cat "$RUNNER_TEMP/selectcutz-api.log"
+          fi
+
+      - name: Stop temporary PHP API
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/selectcutz-api.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/selectcutz-api.pid")" || true
+          fi
