@@ -1,0 +1,51 @@
+name: SelectCutz-$(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  branches:
+    include:
+      - final-app-completion
+      - main
+
+pr:
+  branches:
+    include:
+      - final-app-completion
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    clean: true
+
+  - task: NodeTool@0
+    displayName: Install Node.js 24
+    inputs:
+      versionSpec: '24.x'
+
+  - script: npm ci
+    displayName: Install project dependencies
+
+  - script: npm test -- --configuration=ci --watch=false
+    displayName: Run automated frontend tests
+    env:
+      CI: 'true'
+
+  - bash: |
+      set -euo pipefail
+      php --version
+      while IFS= read -r -d '' file; do
+        php -l "$file"
+      done < <(find backend -type f -name '*.php' -print0)
+    displayName: Check PHP syntax
+
+  - script: npm run build
+    displayName: Build production web application
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish compiled web files
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/www'
+      artifact: selectcutz-web
+      publishLocation: pipeline
