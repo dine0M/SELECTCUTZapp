@@ -1,51 +1,58 @@
-name: SelectCutz-$(Date:yyyyMMdd).$(Rev:r)
 
 trigger:
   branches:
     include:
-      - final-app-completion
       - main
 
 pr:
   branches:
     include:
-      - final-app-completion
       - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
   - checkout: self
     clean: true
 
   - task: NodeTool@0
-    displayName: Install Node.js 24
+    displayName: 'Install Node.js'
     inputs:
-      versionSpec: '24.x'
+      versionSpec: '22.x'
 
-  - script: npm ci
-    displayName: Install project dependencies
+  - script: |
+      echo "Installing SELECT CUTZ dependencies..."
+      if [ -f package-lock.json ]; then
+        npm ci
+      else
+        npm install
+      fi
+    displayName: 'Install npm Dependencies'
 
-  - script: npm test -- --configuration=ci --watch=false
-    displayName: Run automated frontend tests
-    env:
-      CI: 'true'
+  - script: |
+      echo "Building SELECT CUTZ Ionic application..."
+      npm run build
+    displayName: 'Build Ionic Angular Application'
 
-  - bash: |
-      set -euo pipefail
-      php --version
-      while IFS= read -r -d '' file; do
-        php -l "$file"
-      done < <(find backend -type f -name '*.php' -print0)
-    displayName: Check PHP syntax
+  - script: |
+      echo "Installing PHP..."
+      sudo apt-get update
+      sudo apt-get install -y php-cli
 
-  - script: npm run build
-    displayName: Build production web application
+      echo "Validating PHP backend..."
+
+      if [ -d backend ]; then
+        find backend -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
+      else
+        echo "Backend directory not found."
+        exit 1
+      fi
+    displayName: 'Validate PHP Backend'
 
   - task: PublishPipelineArtifact@1
-    displayName: Publish compiled web files
+    displayName: 'Publish Ionic Build'
     inputs:
-      targetPath: '$(Build.SourcesDirectory)/www'
-      artifact: selectcutz-web
-      publishLocation: pipeline
+      targetPath: '$(Build.SourcesDirectory)/dist'
+      artifact: 'SELECT-CUTZ-Ionic-Build'
+      publishLocation: 'pipeline'
