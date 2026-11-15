@@ -1,12 +1,5 @@
-trigger:
-  branches:
-    include:
-      - main
-
-pr:
-  branches:
-    include:
-      - main
+trigger: none
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -16,43 +9,43 @@ steps:
     clean: true
 
   - task: NodeTool@0
-    displayName: 'Install Node.js'
+    displayName: 'Set up Node.js 24'
     inputs:
-      versionSpec: '22.x'
+      versionSpec: '24.x'
 
-  - script: |
-      echo "Installing SELECT CUTZ dependencies..."
-      if [ -f package-lock.json ]; then
-        npm ci
-      else
-        npm install
-      fi
-    displayName: 'Install npm Dependencies'
+  - bash: |
+      set -euo pipefail
+      node --version
+      npm --version
 
-  - script: |
-      echo "Building SELECT CUTZ Ionic application..."
+      npm install --package-lock-only
+      git diff --stat -- package-lock.json
+      npm ci
+    workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: 'Repair and verify npm lockfile on Linux'
+
+  - publish: '$(Build.SourcesDirectory)/package-lock.json'
+    artifact: repaired-lockfile
+    displayName: 'Publish verified lockfile'
+
+  - bash: |
+      set -euo pipefail
       npm run build
-    displayName: 'Build Ionic Angular Application'
+    workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: 'Build Ionic Angular application'
 
-  - script: |
-      echo "Installing PHP..."
-      sudo apt-get update
-      sudo apt-get install -y php-cli
-
-      echo "Validating PHP backend..."
-
-      if [ -d backend ]; then
-        find backend -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
-      else
-        echo "Backend directory not found."
-        exit 1
+  - bash: |
+      set -euo pipefail
+      if ! command -v php >/dev/null 2>&1; then
+        sudo apt-get update
+        sudo apt-get install -y php-cli
       fi
-    displayName: 'Validate PHP Backend'
 
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Ionic Build'
-    inputs:
-      targetPath: '$(Build.SourcesDirectory)/dist'
-      artifact: 'SELECT-CUTZ-Ionic-Build'
-      publishLocation: 'pipeline'
+      php --version
+      find backend -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
+    workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: 'Check PHP syntax'
 
+  - publish: '$(Build.SourcesDirectory)/www'
+    artifact: selectcutz-web
+    displayName: 'Publish web build'
