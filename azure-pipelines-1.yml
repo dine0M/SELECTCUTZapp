@@ -1,0 +1,58 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+    clean: true
+
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '22.x'
+
+  - script: |
+      echo "Installing SELECT CUTZ dependencies..."
+      if [ -f package-lock.json ]; then
+        npm ci
+      else
+        npm install
+      fi
+    displayName: 'Install npm Dependencies'
+
+  - script: |
+      echo "Building SELECT CUTZ Ionic application..."
+      npm run build
+    displayName: 'Build Ionic Angular Application'
+
+  - script: |
+      echo "Installing PHP..."
+      sudo apt-get update
+      sudo apt-get install -y php-cli
+
+      echo "Validating PHP backend..."
+
+      if [ -d backend ]; then
+        find backend -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
+      else
+        echo "Backend directory not found."
+        exit 1
+      fi
+    displayName: 'Validate PHP Backend'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Ionic Build'
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/dist'
+      artifact: 'SELECT-CUTZ-Ionic-Build'
+      publishLocation: 'pipeline'
+
